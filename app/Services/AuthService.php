@@ -10,12 +10,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthService
 {
-    private UserRepository $userRepository;
+//    private UserRepository $userRepository;
     /**
      * Constructor
      */
-    public function __construct() {
-        $this->userRepository = new UserRepository(new User());
+    public function __construct(protected UserRepository $userRepository) {
+//        $this->userRepository = new UserRepository(new User());
     }
     /**
      * Register a User.

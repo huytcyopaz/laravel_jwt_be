@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Requests\UserRequest;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\AuthService;
@@ -19,7 +17,7 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct(protected AuthService $authService) {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
@@ -34,7 +32,7 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $data = $request->all();
-        $user = (new AuthService())->login($data);
+        $user = $this->authService->login($data);
         return response()->json($user);
     }
     /**
@@ -46,7 +44,8 @@ class AuthController extends Controller
    public function register(UserRequest $request): JsonResponse
     {
         try {
-            $user = (new AuthService())->register($request->all());
+            $data = $request->all();
+            $user = $this->authService->register($data);
             return response()->json([
                 'message' => 'User successfully registered',
                 'user' => $user
